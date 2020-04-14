@@ -3,6 +3,8 @@
 ### Descripción General
 <p>El programa carga cualquier archivo Wavefront .obj cuya maya esté triangulada y tenga normales, le aplica una textura tipo checker, renderiza el modelo y lo despliega en una ventana del gestor X con un par de luces predeterminadas. Además, permite rotar el modelo sobre los ejes X y Y (en coordenadas de plano de proyección), así como desplazar la cámara por el mundo.</p>
 <p>No se utilizó ninguna biblioteca de gráficos. Sólo utiliza las bibliotecas Eigen y X11.</p>
+<p>A continuación, se muestra un ejemplo de render generado con el programa.</p>
+<img alt="Render del conejo de Stanford." height="300px" width="300px" src="https://raw.githubusercontent.com/Davacas/Visualizador-Archivos-OBJ/master/renders/render_bunny.png">
 <p>En la carpeta "renders" de este repositorio se encuentran algunos de los renders de diferentes archivos, generados con este programa.</p>
 
 ### Código fuente y bibliotecas externas
