@@ -4,7 +4,7 @@
 <p>El programa carga cualquier archivo Wavefront .obj cuya maya esté triangulada y tenga normales, le aplica una textura tipo checker, renderiza el modelo y lo despliega en una ventana del gestor X con un par de luces predeterminadas. Además, permite rotar el modelo sobre los ejes X y Y (en coordenadas de plano de proyección), así como desplazar la cámara por el mundo.</p>
 <p>No se utilizó ninguna biblioteca de gráficos. Sólo utiliza las bibliotecas Eigen y X11.</p>
 <p>A continuación, se muestra un ejemplo de render generado con el programa.</p>
-<img alt="Render del conejo de Stanford." height="300px" width="300px" src="https://raw.githubusercontent.com/Davacas/Visualizador-Archivos-OBJ/master/renders/render_bunny.png">
+<img alt="Render del conejo de Stanford." height="300px" width="300px" src="https://raw.githubusercontent.com/Davacas/Visualizador-Archivos-OBJ/master/renders/render_conejo.png">
 <p>En la carpeta "renders" de este repositorio se encuentran algunos de los renders de diferentes archivos, generados con este programa.</p>
 
 ### Código fuente y bibliotecas externas
@@ -61,12 +61,10 @@
 <p>Una vez que se aplica una transformación sobre la cámara o sobre el modelo, se notifica la transformación realizada en la consola y se renderiza nuevamente el modelo, considerando dicha transformación. Cabe notar que cualquier interacción que se haga durante el proceso de renderizado se almacena en un buffer y se ejecutará una vez terminado el último render, por lo que recomiendo esperar a que termine el proceso de renderizado para interactuar nuevamente con el programa.</p>
 
 ### Flujo detallado de la implementación
-<p>El programa renderiza cualquier archivo Wavefront .obj cuya maya esté triangulada y contenga normales (aunque con algunos detalles como se aprecia en la Figura 1). Para ello, me basé bastante en los tutoriales de Scratchapixel 2.0, en particular en la lección “Rasterization: a Practical Implementation” disponible en <a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation">esta liga</a>.</p>
+<p>El programa renderiza cualquier archivo Wavefront .obj cuya maya esté triangulada y contenga normales. Para ello, me basé bastante en los tutoriales de Scratchapixel 2.0, en particular en la lección “Rasterization: a Practical Implementation” disponible en <a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation">esta liga</a>.</p>
 <p>Para cargar los modelos, se escribió desde cero un procesador de archivos Wavefront .obj, el cual genera un vector que contiene todas los atributos de cada cara.</p>
 <p>Posteriormente, ese vector se pasa a la función de renderizado, la cual despliega las imágenes utilizando el proceso de rasterización descrito en el tutorial de Scratchapixel 2.0 anteriormente mencionado.</p>
 <p>Para la iluminación se asumen dos luces: una roja en la esquina superior izquierda del modelo y una azul en la esquina superior derecha del modelo. Estas luces permanecen estáticas, independientemente de las transformaciones que se apliquen al modelo.</p>
 <p>Para el sombreado, se utilizó el modelo de iluminación de Phong. Sin embargo, para que funcione correctamente, el archivo .obj debe contener las normales suavizadas.</p>
 <p>Para el texturizado, el programa ignora las UVs incluidas en el .obj y genera sus propias utilizando un mapeo esférico sobre el modelo. Sobre ellas se aplica el patrón de checker.</p>
 <p>Finalmente, el resultado se despliega en una ventana del gestor de ventanas X, donde se puede desplazar la cámara virtual sobre cualquiera de los tres ejes y rotar el modelo sobre los ejes X y Y en coordenadas de plano de proyección, lo cual permite visualizar el modelo desde diferentes perspectivas.</p>
-  
-  
