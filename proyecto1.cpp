@@ -284,21 +284,11 @@ Eigen::Vector4f leerVec3DeCadena(std::string cadena) {
     std::string numero;     //Cadena que se va a convertir a float.
     char caracter;          //Caracter leído.
     int coord = 0;          //Coordenada (X, Y, Z) que se está leyendo
-
-    for (int i = 1; i < cadena.length(); i++) {     //Por cada caracter en la cadena:
-        caracter = cadena[i];
-        if ((caracter >= 48 && caracter <= 57) || caracter == '-' || caracter == '.') { //Si el caracter es tipo numérico,
-            numero += caracter;     //se concatena ese caracter.
-        }
-        else if (caracter == ' ' && !numero.empty()) {  //Si el caracter es un espacio y ya se obtuvo un número.            
-            punto(coord) = std::stof(numero);           //se agrega ese número como coordenada,
-            numero.clear();                             //se borra el número para poder obtener otro
-            coord ++;                                   //y aumenta la coordenada a obtener.
-        }
+    
+    if (std::sscanf(cadena.c_str(), "vn %f %f %f", &punto[0], &punto[1], &punto[2]) != 3) {
+        std::sscanf(cadena.c_str(), "v %f %f %f", &punto[0], &punto[1], &punto[2]);
     }
-    punto(coord) = std::stof(numero);   //Se agrega el último número obtenido.
     punto[3] = 1.0f;   //Se agrega la coordenada homogénea.
-    //std::cout << punto.transpose() << std::endl; //Impresión para debuggeo.
 
     return punto;
 }
@@ -307,42 +297,29 @@ Eigen::Vector4f leerVec3DeCadena(std::string cadena) {
 //y se regresa una estructura con las propiedades correspondientes a esa cara.
 Cara obtenerPropiedadesCara(const std::string &cadena, const std::vector<Eigen::Vector4f> &vertices, const std::vector<Eigen::Vector4f> &normales) {
     Cara cara;              //Contiene las propiedades de la cara obtenida.
-    int i = 0;              //Índice que representa el número de vértice actual.
+    int i_vert = 0;              //Índice que representa el número de vértice actual.
+    int iv = 0, it = 0, in = 0;     //Índice de la coordenada de vértice, textura y normal.
     std::vector<int> indices;   //Vector con los índices obtenidos por cada línea.
     std::stringstream cadena_aux(cadena);   //Cadena auxiliar para particionar la original por tokens.
     std::string subcadena;      //Cadena obtenida de particionar cadena_aux;
 
     getline(cadena_aux, subcadena, ' ');            //Se ignora la primer subcadena, que es la letra F.
     while(getline(cadena_aux, subcadena, ' ')) {    //Se tokeniza la cadena por espacios, para obtener las propiedades de cada vértice.
-        std::stringstream cadena_aux2(subcadena); 
-        std::string numero;
-        while(getline(cadena_aux2, numero, '/')) {  //Se tokeniza cada vértice por '/', para obtener cada índice.
-            if(!numero.empty()) {                   //Si el número es válido.
-                //std::cout << numero << std::endl;
-                indices.push_back(std::stoi(numero));//se agrega a la lista de índices.
-            }
-            else {                                  //Si no, se agrega un 0 a la lista de índices.
-                indices.push_back(0);
-            }
+        if (std::sscanf(subcadena.c_str(), "%i/%i/%i", &iv, &it, &in) != 3) {
+            std::sscanf(subcadena.c_str(), "%i//%i", &iv, &in);
         }
 
-        //Si un índice es negativo, se obtiene su índice "real".
-        if (indices[0] < 0) {                       
-            indices[0] = vertices.size() + indices[0]+1;
+        if (iv < 0) {
+            iv = vertices.size() + iv+1;
         }
-        if (indices[2] < 0) {
-            indices[2] = normales.size() + indices[2]+1;
+        if (in < 0) {
+            in = normales.size() + in+1;
         }
 
-        //Si una lista de componentes tiene elementos, se obtiene esa componente y se guarda en la cara.
-        if (!vertices.empty()) {
-            cara.vertice[i] = vertices[ indices[0]-1 ];
-        }
-        if (!normales.empty()) {
-            cara.normal[i] = normales[ indices[2]-1 ].normalized();
-        }
+        cara.vertice[i_vert] = vertices[iv-1];
+        cara.normal[i_vert] = normales[in-1].normalized();
         
-        i ++;
+        i_vert ++;
         indices.clear();  
     } 
     return cara;
